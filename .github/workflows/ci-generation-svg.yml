@@ -1,0 +1,35 @@
+name: Generation SVG
+
+on:
+  # 手動実行を可能にする設定
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'GitHub Username'
+        required: true
+        default: 'aew2sbee'
+
+jobs:
+  run-command:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Execute git-level command
+        # inputs.username で指定された値を使用して実行
+        run: pnpm git-level ${{ github.event.inputs.username }}
