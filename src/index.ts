@@ -5,20 +5,23 @@ import { analyzeUserStats } from './analyzer';
 import { renderSvg } from './renderer';
 import 'dotenv/config'; // dotenvをロード
 
+const LANG_EN = 'en';
+const LANG_JA = 'ja';
+
 async function main() {
   // コマンドライン引数を解析
   // 例: pnpm start <github_username>
   const args = process.argv.slice(2);
   let username: string | undefined;
-  let lang: 'ja' | 'en' = 'ja';
+  let lang: typeof LANG_EN | typeof LANG_JA = LANG_JA;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i].startsWith('--lang=')) {
       const specifiedLang = args[i].substring('--lang='.length);
-      if (specifiedLang === 'en') {
-        lang = 'en';
-      } else if (specifiedLang === 'ja') {
-        lang = 'ja';
+      if (specifiedLang === LANG_EN) {
+        lang = LANG_EN;
+      } else if (specifiedLang === LANG_JA) {
+        lang = LANG_JA;
       } else {
         console.warn(`Warning: Invalid language specified: ${specifiedLang}. Using default 'ja'.`);
       }
