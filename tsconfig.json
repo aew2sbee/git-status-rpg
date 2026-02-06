@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es2021",                         /* 最新のJavaScriptターゲットを指定します。 */
-    "module": "commonjs",                      /* モジュールコードの生成方法を指定します。'none'、'commonjs'、'amd'、'system'、'umd'、'es2015'、'es2020'、'es2022'、'esnext'など。 */
-    "outDir": "./dist",                        /* 出力構造をディレクトリにリダイレクトします。 */
-    "rootDir": "./src",                        /* 入力ファイルのルートディレクトリを指定します。 */
-    "strict": true,                            /* すべての厳格な型チェックオプションを有効にします。 */
-    "esModuleInterop": true,                   /* CommonJSモジュールでのBabelスタイルのインポートを有効にします。 */
-    "skipLibCheck": true,                      /* すべての.d.tsファイルの型チェックをスキップします。 */
-    "forceConsistentCasingInFileNames": true   /* すべてのファイルシステムで大文字小文字の区別が一貫していることを確認します。 */
+    "target": "es2021",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    /* ライブラリ公開のための重要設定 */
+    "declaration": true,                   /* 型定義ファイル (.d.ts) を生成します */
+    "declarationMap": true,                /* 型定義ファイルからソースコードへのリンクを作成します */
+    "sourceMap": true,                     /* デバッグ用にソースマップを生成します */
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
