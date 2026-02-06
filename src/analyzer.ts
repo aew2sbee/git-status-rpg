@@ -2,20 +2,21 @@ import { RepoInfo, UserStats } from './types'; // 型定義をインポート
 
 interface TitleThreshold {
   threshold: number; // このバイト数以上で称号獲得
-  title: string;
+  title_ja: string;
+  title_en: string;
 }
 
 const TITLE_THRESHOLDS: TitleThreshold[] = [
-  { threshold: 0, title: 'Hello World Habitants' },
-  { threshold: 10_000, title: 'Aspiring Developer' },
-  { threshold: 50_000, title: 'Code Follower' },
-  { threshold: 100_000, title: 'Bug Hunter' },
-  { threshold: 250_000, title: 'Logic Architect' },
-  { threshold: 500_000, title: 'Code Designer' },
-  { threshold: 1_000_000, title: 'Framework Master' },
-  { threshold: 2_500_000, title: 'Legendary Deployer' },
-  { threshold: 5_000_000, title: 'System Sage' },
-  { threshold: 10_000_000, title: 'Binary God' },
+  { threshold: 0, title_ja: 'Hello Worldの住人', title_en: 'Hello World Habitants' },
+  { threshold: 10_000, title_ja: '駆け出しコーダー', title_en: 'Aspiring Developer' },
+  { threshold: 50_000, title_ja: '写経をする者', title_en: 'Code Follower' },
+  { threshold: 100_000, title_ja: '不具合を狩る者', title_en: 'Bug Hunter' },
+  { threshold: 250_000, title_ja: 'ロジックの構築師', title_en: 'Logic Architect' },
+  { threshold: 500_000, title_ja: 'コードの設計士', title_en: 'Code Designer' },
+  { threshold: 1_000_000, title_ja: 'フレームワークの覇者', title_en: 'Framework Master' },
+  { threshold: 2_500_000, title_ja: '伝説のデプロイヤー', title_en: 'Legendary Deployer' },
+  { threshold: 5_000_000, title_ja: 'システムの賢者', title_en: 'System Sage' },
+  { threshold: 10_000_000, title_ja: 'バイナリの神', title_en: 'Binary God' },
 ];
 
 const INIT_LEVEL = 1;
@@ -74,37 +75,37 @@ function calculateNextLevelExp(totalBytes: number): number {
 
 
 // バイト数から称号を算出するロジック
-function calculateTitle(totalBytes: number): string {
+function calculateTitle(totalBytes: number, lang: 'ja' | 'en'): string {
   // 閾値が高い方から順にチェックし、最初に条件を満たした称号を返す
   for (let i = TITLE_THRESHOLDS.length - 1; i >= 0; i--) {
     if (totalBytes >= TITLE_THRESHOLDS[i].threshold) {
-      return TITLE_THRESHOLDS[i].title;
+      return lang === 'en' ? TITLE_THRESHOLDS[i].title_en : TITLE_THRESHOLDS[i].title_ja;
     }
   }
   // どの閾値も満たさない場合は、最低の称号を返す（理論上はthreshold: 0でカバーされるはず）
-  return TITLE_THRESHOLDS[0].title;
+  return lang === 'en' ? TITLE_THRESHOLDS[0].title_en : TITLE_THRESHOLDS[0].title_ja;
 }
 
-export function analyzeUserStats(repos: RepoInfo[]): UserStats {
+export function analyzeUserStats(repos: RepoInfo[], lang: 'ja' | 'en' = 'ja'): UserStats {
   let totalBytes = 0;
 
   for (const repo of repos) {
-    for (const lang in repo.languages) {
-      if (Object.prototype.hasOwnProperty.call(repo.languages, lang)) {
-        const bytes = repo.languages[lang];
+    for (const langKey in repo.languages) {
+      if (Object.prototype.hasOwnProperty.call(repo.languages, langKey)) {
+        const bytes = repo.languages[langKey];
         totalBytes += bytes;
       }
     }
   }
 
   const level = calculateLevel(totalBytes);
-  const rank = calculateTitle(totalBytes); // title から rank に変更
+  const rank = calculateTitle(totalBytes, lang);
   const nextLevelExp = calculateNextLevelExp(totalBytes);
 
   return {
     totalBytes,
     level,
-    rank, // title から rank に変更
+    rank,
     nextLevelExp,
   };
 }

@@ -8,14 +8,29 @@ import 'dotenv/config'; // dotenvをロード
 async function main() {
   // コマンドライン引数を解析
   // 例: pnpm start <github_username>
-  const args = process.argv.slice(2); // node と index.js を除外
+  const args = process.argv.slice(2);
+  let username: string | undefined;
+  let lang: 'ja' | 'en' = 'ja';
 
-  if (args.length === 0) {
-    console.error('Usage: pnpm start <github_username>');
-    process.exit(1);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i].startsWith('--lang=')) {
+      const specifiedLang = args[i].substring('--lang='.length);
+      if (specifiedLang === 'en') {
+        lang = 'en';
+      } else if (specifiedLang === 'ja') {
+        lang = 'ja';
+      } else {
+        console.warn(`Warning: Invalid language specified: ${specifiedLang}. Using default 'ja'.`);
+      }
+    } else if (!username) {
+      username = args[i];
+    }
   }
 
-  const username = args[0];
+  if (!username) {
+    console.error('Usage: pnpm start <github_username> [--lang=en|ja]');
+    process.exit(1);
+  }
   // 環境変数からトークンを取得する
   // ローカル環境では .env.local から、GitHub Actions では secrets から読み込まれることを想定
   const token = process.env.GITHUB_TOKEN;
@@ -28,7 +43,7 @@ async function main() {
 
   try {
     const repos = await fetchUserReposAndLanguages(username, token);
-    const stats = analyzeUserStats(repos);
+    const stats = analyzeUserStats(repos, lang);
     console.log(stats);
 
     // テキスト出力を維持
